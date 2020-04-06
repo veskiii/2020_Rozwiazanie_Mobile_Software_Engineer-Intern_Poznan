@@ -1,12 +1,9 @@
 package com.example.mikolaj.sklepallegro;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.Drawable;
-import android.media.Image;
-import android.text.Html;
-import android.util.Log;
+import android.text.Spannable;
+import android.text.SpannableStringBuilder;
+import android.text.style.StyleSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,23 +13,15 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
+import java.util.Locale;
 
 class CustomAdapter extends BaseAdapter {
     Context context;
-    ArrayList<Offer> offers;
-    LayoutInflater inflater;
+    private ArrayList<Offer> offers;
+    private LayoutInflater inflater;
 
-    public CustomAdapter(Context applicationContext, ArrayList<Offer> offers){
+    CustomAdapter(Context applicationContext, ArrayList<Offer> offers){
         this.context = applicationContext;
         this.offers = offers;
         inflater = (LayoutInflater.from(applicationContext));
@@ -45,7 +34,7 @@ class CustomAdapter extends BaseAdapter {
 
     @Override
     public Object getItem(int position) {
-        return null;
+        return offers.get(position);
     }
 
     @Override
@@ -62,11 +51,17 @@ class CustomAdapter extends BaseAdapter {
 
         Glide.with(this.context).load(offers.get(position).getThumbnailUrl()).into(icon);
 
-        //icon.setImageBitmap(thumbnail);
         name.setText(offers.get(position).getName());
-        String price_text = "cena: " +"<b>"+ String.format("%.02f", offers.get(position).getPrice().getAmount()) +
-                ' '+offers.get(position).getPrice().getCurrency()+"</b>";
-        price.setText(Html.fromHtml(price_text)); //TODO: aby zachować kompatybilność z nowymi wersjami trzeba inaczej tego html zrobić
+
+        String cena = "cena: ";
+        String priceBold = String.format(Locale.getDefault(),"%.02f", offers.get(position).getPrice().getAmount()).replace('.', ',');
+        String finalString= cena+priceBold+' '+offers.get(position).getPrice().getCurrency();
+
+        final SpannableStringBuilder sb = new SpannableStringBuilder(finalString);
+        final StyleSpan bss = new StyleSpan(android.graphics.Typeface.BOLD);
+        sb.setSpan(bss, cena.length(), finalString.length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+
+        price.setText(sb);
         return convertView;
     }
 

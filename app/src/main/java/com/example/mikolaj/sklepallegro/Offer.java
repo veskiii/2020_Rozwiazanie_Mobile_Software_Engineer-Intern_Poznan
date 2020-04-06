@@ -1,6 +1,8 @@
 package com.example.mikolaj.sklepallegro;
 
-public class Offer {
+import java.io.Serializable;
+
+public class Offer implements Serializable {
     private String id;
     private String name;
     private String thumbnailUrl;

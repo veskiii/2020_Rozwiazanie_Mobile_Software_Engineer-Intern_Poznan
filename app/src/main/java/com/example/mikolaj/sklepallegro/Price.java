@@ -1,10 +1,12 @@
 package com.example.mikolaj.sklepallegro;
 
-public class Price {
+import java.io.Serializable;
+
+public class Price implements Serializable {
     private double amount;
     private String currency;
 
-    public Price(double amount, String currency){
+    Price(double amount, String currency){
         this.amount = amount;
         this.currency = currency;
     }
